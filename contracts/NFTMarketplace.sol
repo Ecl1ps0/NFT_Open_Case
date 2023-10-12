@@ -28,6 +28,12 @@ contract NFTOpenCase is ERC721URIStorage {
         _;
     }
 
+    modifier possibleToCreateToken(uint256 price) {
+        require(msg.value == listPrice, "Not Enough ether to list!");
+        require(price > 0, "The price can not be negative number!");
+        _;
+    }
+
     struct Item {
         uint256 tokenId;
         address payable owner;
@@ -56,5 +62,27 @@ contract NFTOpenCase is ERC721URIStorage {
         return idItem[tokenId];
     }
 
-    
+    function createListedToken(uint256 tokenId, uint256 price) private {
+        idItem[tokenId] = Item(
+            tokenId,
+            payable(address(this)),
+            payable(msg.sender),
+            price,
+            true
+        );
+
+        _transfer(msg.sender, address(this), tokenId);
+    }
+
+    function createToken(string memory tokenURI, uint256 price) public payable possibleToCreateToken(price) returns (uint256) {
+        _tokenIds.increment();
+        uint256 currentTokenId = _tokenIds.current();
+        _safeMint(msg.sender, currentTokenId);
+
+        _setTokenURI(currentTokenId, tokenURI);
+
+        createListedToken(currentTokenId, price);
+
+        return currentTokenId;
+    }
 }
