@@ -85,4 +85,18 @@ contract NFTOpenCase is ERC721URIStorage {
 
         return currentTokenId;
     }
+
+    function getAllNFT() public view returns (Item[] memory) {
+        uint256 nftCount = _tokenIds.current();
+        Item[] memory tokens = new Item[](nftCount);
+
+        uint256 currentIndex = 0;
+        for (uint256 i=0; i<nftCount; i++) {
+            Item storage currentItem = idItem[i + 1];
+            tokens[currentIndex] = currentItem;
+            currentIndex++;
+        }
+
+        return tokens;
+    }
 }
