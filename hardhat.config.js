@@ -17,9 +17,9 @@ module.exports = {
     hardhat: {
       chainId: 1337
     },
-    goerli: {
-      url: "<YOUR_ALCHEMY_URL>",
-      accounts: [ "<YOUR_PRIVATE_KEY>" ]
+    sepolia: {
+      url: "https://eth-sepolia.g.alchemy.com/v2/4PsucyR49054Tx3p4c3Zk6B8N-CvW9I2",
+      accounts: [ "7495bb90a51b5647a7206b7bfe6542c61eb46fc17cb116192ec7852416d94e9d" ]
     }
   },
   solidity: {
