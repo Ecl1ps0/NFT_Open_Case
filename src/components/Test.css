@@ -1,0 +1,73 @@
+.body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 500px;
+}
+.app {
+	color: #e8e8e8;
+	font-size: 20px;
+}
+.app > img {
+	position: relative;
+	z-index: 1;
+	left: 50%;
+	transform: translate(-50%, 25px);
+}
+.app > .btn {
+	position: relative;
+	left: 50%;
+	transform: translate(-50%, 20px);
+	padding: 10px 30px;
+
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	background: #4c4c4c;
+	color: white;
+
+	cursor: pointer;
+	transition: 0.2s ease;
+}
+
+.app > .btn:hover {
+	background: #2f2f2f;
+	letter-spacing: 3px;
+	box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.5);
+}
+
+.app > .scopeHidden {
+	overflow: hidden;
+	width: 800px;
+	height: 150px;
+	background-color: #2f2f2f;
+}
+
+.scopeHidden {
+	overflow: hidden;
+	width: 800px;
+	height: 150px;
+	background: #2f2f2f;
+	border-radius: 10px;
+	box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.5);
+}
+.scopeHidden > ul {
+	position: relative;
+	left: 0;
+	display: inline-flex;
+	transition: 3s ease;
+}
+.scopeHidden > ul > li {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 150px;
+	height: 150px;
+}
+
+.scopeHidden > ul > li.middle {
+	background: #282828;
+}
+.btn:disabled {
+	cursor: not-allowed;
+}
