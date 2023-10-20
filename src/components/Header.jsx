@@ -1,20 +1,30 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png';
 import { setCredential } from '../redux/slices/auth.slice';
 import { ethers } from 'ethers';
 
+import { toast } from 'react-hot-toast';
+
 const Header = () => {
 	const dispatch = useDispatch();
-	const provider = new ethers.providers.Web3Provider(window.ethereum);
+	const provider = useRef(null);
+
+	useEffect(() => {
+		if (window.ethereum)
+			provider.current = new ethers.providers.Web3Provider(window.ethereum);
+	}, []);
+
 	const { credential } = useSelector((state) => state.auth);
 	const connect = async () => {
-		if (window.ethereum) {
-			provider.send('eth_requestAccounts', []).then(async () => {
-				dispatch(setCredential(await provider.getSigner().getAddress()));
-			});
+		if (!window.ethereum) {
+			toast.error('Please Install MetaMask!!!');
 		} else {
-			alert('Please Install MetaMask!!!');
+			provider.current.send('eth_requestAccounts', []).then(async () => {
+				dispatch(
+					setCredential(await provider.current.getSigner().getAddress())
+				);
+			});
 		}
 	};
 
