@@ -4,34 +4,38 @@ import { Layout } from './components';
 import Test from './components/Test';
 import { Toaster } from 'react-hot-toast';
 
+import { ProviderNFT } from './Context/NFTContract';
+
 const Home = lazy(() => import('./pages/Home'));
 const Error = lazy(() => import('./pages/Error'));
 const App = () => {
 	return (
-		<Suspense fallback={<Layout>Loading...</Layout>}>
-			<BrowserRouter>
-				<Layout>
-					<Routes>
-						<Route
-							path='/'
-							element={<Home />}
+		<ProviderNFT>
+			<Suspense fallback={<Layout>Loading...</Layout>}>
+				<BrowserRouter>
+					<Layout>
+						<Routes>
+							<Route
+								path='/'
+								element={<Home />}
+							/>
+							<Route
+								path='/test'
+								element={<Test />}
+							/>
+							<Route
+								path='*'
+								element={<Error />}
+							/>
+						</Routes>
+						<Toaster
+							position='top-right'
+							reverseOrder={false}
 						/>
-						<Route
-							path='/test'
-							element={<Test />}
-						/>
-						<Route
-							path='*'
-							element={<Error />}
-						/>
-					</Routes>
-					<Toaster
-						position='top-right'
-						reverseOrder={false}
-					/>
-				</Layout>
-			</BrowserRouter>
-		</Suspense>
+					</Layout>
+				</BrowserRouter>
+			</Suspense>
+		</ProviderNFT>
 	);
 };
 
