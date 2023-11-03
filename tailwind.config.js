@@ -5,6 +5,9 @@ module.exports = {
 			fontFamily: {
 				rubik: ['Inter', 'sans-serif'],
 			},
+			backgroundImage: {
+				Error: "url('/src/assets/Error.jpg')",
+			},
 		},
 	},
 	plugins: [],

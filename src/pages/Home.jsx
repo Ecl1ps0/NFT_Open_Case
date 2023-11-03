@@ -1,5 +1,13 @@
+import Case from '../components/Case';
+
 const Home = () => {
-	return <main className=''></main>;
+	return (
+		<main className='p-12 container mx-auto font-rubik justify-center w-full flex flex-wrap gap-5'>
+			{new Array(20).fill(0).map((_) => {
+				return <Case />;
+			})}
+		</main>
+	);
 };
 
 export default Home;

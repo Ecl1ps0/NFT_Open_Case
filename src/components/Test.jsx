@@ -8,7 +8,7 @@ const Test = () => {
 	const [isStarted, setIsStarted] = useState(false);
 	const ulRef = useRef(null);
 	const start = () => {
-		const move = -150 * (Math.floor(Math.random() * 10) - 2);
+		const move = -150 * (Math.floor(Math.random() * 20) - 2);
 		ulRef.current.style.left = move + 'px';
 
 		const scopeHidden = ulRef.current.parentElement;
@@ -27,29 +27,40 @@ const Test = () => {
 	};
 
 	return (
-		<main className='body'>
-			<div className='app'>
-				<img
-					src={pointer}
-					alt=''
-					width={50}
-					height={50}
-				/>
-
-				<div className='scopeHidden'>
-					<ul ref={ulRef}>
-						{new Array(10).fill(0).map((_, idx) => (
-							<li key={idx + 1}>{idx + 1}</li>
-						))}
-					</ul>
+		<main>
+			<section className='body'>
+				<div className='app'>
+					<img
+						src={pointer}
+						alt=''
+						width={50}
+						height={50}
+					/>
+					<div className='scopeHidden'>
+						<ul ref={ulRef}>
+							{new Array(20).fill(0).map((_, idx) => (
+								<li key={idx + 1}>{idx + 1}</li>
+							))}
+						</ul>
+					</div>
+					{!isStarted && (
+						<button
+							onClick={start}
+							className='btn'>
+							Крутить
+						</button>
+					)}
 				</div>
-				<button
-					disabled={isStarted}
-					onClick={start}
-					className='btn'>
-					Крутить
-				</button>
-			</div>
+			</section>
+			{isStarted && (
+				<div className='w-full flex justify-center'>
+					<button
+						onClick={() => window.location.reload()}
+						className='px-3 py-2.5 font-rubik text-white bg-green-800 hover:px-5 transition-all hover:tracking-widest'>
+						<span className='hover:w-full hover:h-full'>Повторить ещё</span>
+					</button>
+				</div>
+			)}
 		</main>
 	);
 };
