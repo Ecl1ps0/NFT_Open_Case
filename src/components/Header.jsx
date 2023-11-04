@@ -10,13 +10,11 @@ import { ContextNFT } from '../Context/NFTContract';
 const Header = () => {
 	const dispatch = useDispatch();
 	const provider = useRef(null);
-	const { checkContract } = useContext(ContextNFT);
+	const {} = useContext(ContextNFT);
 
 	useEffect(() => {
 		if (window.ethereum)
 			provider.current = new ethers.providers.Web3Provider(window.ethereum);
-		const d = checkContract();
-		console.log(d.address);
 	}, []);
 
 	const { credential } = useSelector((state) => state.auth);
