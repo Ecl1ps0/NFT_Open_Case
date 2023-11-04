@@ -1,18 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png';
 import { setCredential } from '../redux/slices/auth.slice';
 import { ethers } from 'ethers';
 
 import { toast } from 'react-hot-toast';
+import { ContextNFT } from '../Context/NFTContract';
 
 const Header = () => {
 	const dispatch = useDispatch();
 	const provider = useRef(null);
+	const { checkContract } = useContext(ContextNFT);
 
 	useEffect(() => {
 		if (window.ethereum)
 			provider.current = new ethers.providers.Web3Provider(window.ethereum);
+		const d = checkContract();
+		console.log(d.address);
 	}, []);
 
 	const { credential } = useSelector((state) => state.auth);

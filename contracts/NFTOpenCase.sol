@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: Unlicense
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -18,7 +18,7 @@ contract NFTOpenCase is ERC721URIStorage {
     uint256 listPrice = 0.01 ether;
 
     constructor() ERC721("NFTOpenCase", "NFTOC") {
-        owner = payable(msg.sender);
+        owner == payable(msg.sender);
     }
 
     mapping(uint256 => Item) private idItem;
@@ -42,10 +42,15 @@ contract NFTOpenCase is ERC721URIStorage {
         bool sold;
     } 
 
-    function getCurrentToken() public view returns (uint256) {
-        return _tokenIds.current();
-    }
+    event itemCreated (
+        uint256 indexed tokenId,
+        address owner, 
+        address seller,
+        uint256 price,
+        bool sold
+    );
 
+    // Operating with token and list price
     function getListPrice() public view returns (uint256) {
         return listPrice;
     }
@@ -54,66 +59,103 @@ contract NFTOpenCase is ERC721URIStorage {
         listPrice = _listPrice;
     }
 
-    function getLatestTokenIdByItem() public view returns (Item memory) {
-         return idItem[getCurrentToken()];
-    }
+    // Create item func
+    function createItem(uint256 tokenId, uint256 price) private {
+        require (price > 0, "Price should not be a zero!");
+        require(msg.value == listPrice, "Price should be equal the listing price!");
 
-    function getItemByTokenId(uint256 tokenId) public view returns (Item memory) {
-        return idItem[tokenId];
-    }
-
-    function createListedToken(uint256 tokenId, uint256 price) private {
         idItem[tokenId] = Item(
             tokenId,
             payable(address(this)),
             payable(msg.sender),
             price,
-            true
+            false
         );
+
+        _transfer(msg.sender, address(this), tokenId);
+
+        emit itemCreated(tokenId, address(this), msg.sender, price, false);
+    }
+
+    // Create token func
+    function createToken(string memory tokenURI, uint256 price) public payable possibleToCreateToken(price) returns (uint256) {
+        _tokenIds.increment();
+        uint256 newTokenId = _tokenIds.current();
+
+        _mint(msg.sender, newTokenId);
+        _setTokenURI(newTokenId, tokenURI);
+
+        createItem(newTokenId, price);
+
+        return newTokenId;
+    }
+
+    // Sale func
+    function createSale(uint256 tokenId) public payable {
+        uint256 price = idItem[tokenId].price;
+
+        require(msg.value == price, "Please submit asking price!");
+
+        idItem[tokenId].owner = payable(msg.sender);
+        idItem[tokenId].sold = true;
+        idItem[tokenId].owner = payable(address(0));
+
+        _itemsSold.increment();
+
+        _transfer(address(this), msg.sender, tokenId);
+        
+        payable(owner).transfer(listPrice);
+        payable(idItem[tokenId].seller).transfer(msg.value);
+    }
+
+    // Resell token
+    function resellToken(uint256 tokenId, uint256 price) public payable {
+        require(idItem[tokenId].owner == msg.sender, "Only owner can sell it!");
+        require(msg.value == listPrice, "Price should be equal to list price!");
+
+        idItem[tokenId].price = price;
+        idItem[tokenId].sold = false;
+        idItem[tokenId].seller = payable(msg.sender);
+        idItem[tokenId].owner = payable(address(this));
+
+        _itemsSold.decrement();
 
         _transfer(msg.sender, address(this), tokenId);
     }
 
-    function createToken(string memory tokenURI, uint256 price) public payable possibleToCreateToken(price) returns (uint256) {
-        _tokenIds.increment();
-        uint256 currentTokenId = _tokenIds.current();
-        _safeMint(msg.sender, currentTokenId);
-
-        _setTokenURI(currentTokenId, tokenURI);
-
-        createListedToken(currentTokenId, price);
-
-        return currentTokenId;
-    }
-
+    // Get unsold nft
     function getAllNFT() public view returns (Item[] memory) {
-        uint256 nftCount = _tokenIds.current();
-        Item[] memory tokens = new Item[](nftCount);
+        uint256 itemCount = _tokenIds.current();
+        uint256 unsoldItem = _tokenIds.current() - _itemsSold.current();
+        Item[] memory items = new Item[](unsoldItem);
 
         uint256 currentIndex = 0;
-        for (uint256 i=0; i<nftCount; i++) {
-            Item storage currentItem = idItem[i+1];
-            tokens[currentIndex] = currentItem;
-            currentIndex++;
+        for (uint256 i = 0; i < itemCount; i++) {
+            if (idItem[i + 1].owner == address(this)) {
+                Item storage currentItem = idItem[i+1];
+                items[currentIndex] = currentItem;
+                currentIndex++;   
+            }
         }
 
-        return tokens;
+        return items;
     }
 
+    // Get my nft
     function getMyNFT() public view returns(Item[] memory) {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
-        for(uint256 i=0; i<totalItemCount; i++) {
-            if(idItem[i+1].owner == msg.sender || idItem[i+1].seller == msg.sender) {
+        for(uint256 i = 0; i < totalItemCount; i++) {
+            if(idItem[i + 1].owner == msg.sender || idItem[i + 1].seller == msg.sender) {
                 itemCount++;
             }
         }
 
         Item[] memory items = new Item[](itemCount);
-        for(uint256 i=0; i<totalItemCount; i++) {
-            if(idItem[i+1].owner == msg.sender || idItem[i+1].seller == msg.sender) {
+        for(uint256 i = 0; i < totalItemCount; i++) {
+            if(idItem[i + 1].owner == msg.sender || idItem[i + 1].seller == msg.sender) {
                 Item storage currentItem = idItem[i+1];
                 items[currentIndex] = currentItem;
                 currentIndex++;
@@ -121,24 +163,5 @@ contract NFTOpenCase is ERC721URIStorage {
         }
 
         return items;
-    }
-
-    function executeSale(uint256 tokenId) public payable {
-        uint256 price = idItem[tokenId].price;
-        require(msg.value == price, "Insufficient funds!");
-
-        address seller = idItem[tokenId].seller;
-
-        idItem[tokenId].sold = true;
-        idItem[tokenId].seller = payable(msg.sender);
-
-        _itemsSold.increment();
-
-        _transfer(address(this), msg.sender, tokenId);
-
-        approve(address(this), tokenId);
-
-        payable(owner).transfer(listPrice);
-        payable(seller).transfer(msg.value);
     }
 }
