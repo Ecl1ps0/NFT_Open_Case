@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import logo from '../assets/logo.png';
 import { setCredential } from '../redux/slices/auth.slice';
 import { ethers } from 'ethers';
-
 import { toast } from 'react-hot-toast';
 import { ContextNFT } from '../Context/NFTContract';
+import { Button } from './Button';
 
 const Header = () => {
 	const dispatch = useDispatch();
 	const provider = useRef(null);
-	const {} = useContext(ContextNFT);
+	const { uploadToIpfs, createNFT, fetchNfts, myNFTS, buyNFT } =
+		useContext(ContextNFT);
 
 	useEffect(() => {
 		if (window.ethereum)
@@ -32,7 +33,9 @@ const Header = () => {
 
 	return (
 		<header className='w-full flex justify-between h-16 items-center border-b-2 border-pink-300 bg-zinc-900'>
-			<div className='h-full gap-2.5 flex items-center ml-2'>
+			<div
+				className='h-full gap-2.5 flex items-center ml-2 cursor-pointer'
+				onClick={() => (window.location.href = '/')}>
 				<img
 					src={logo}
 					alt='Bocchi the Case'
@@ -42,11 +45,24 @@ const Header = () => {
 					Bocchi The Case
 				</div>
 			</div>
-			<div className='h-full flex justify-center items-center mr-2'>
+			<div className='h-full  flex justify-center items-center mr-2'>
 				{credential ? (
-					<div className='h-7 px-3 py-1 font-rubik flex items-center rounded-md bg-pink-300 '>
-						<div>{credential}</div>
-					</div>
+					<section className='gap-2 flex'>
+						<div>
+							<Button
+								onClick={() => {
+									// navigate('/add');
+									window.location.href = '/add';
+								}}>
+								Add NFT
+							</Button>
+						</div>
+						<div
+							className='h-7 px-3 py-1 font-rubik flex items-center rounded-md bg-pink-300 cursor-pointer'
+							onClick={() => (window.location.href = '/profile')}>
+							<div>{credential}</div>
+						</div>
+					</section>
 				) : (
 					<button
 						onClick={connect}
