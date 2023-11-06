@@ -15,7 +15,7 @@ contract NFTOpenCase is ERC721URIStorage {
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
 
-    uint256 listPrice = 0.01 ether;
+    uint256 listPrice = 0.0001 ether;
 
     constructor() ERC721("NFTOpenCase", "NFTOC") {
         owner == payable(msg.sender);
