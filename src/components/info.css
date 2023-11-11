@@ -1,0 +1,30 @@
+.info-section {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    text-align: center; 
+  }
+  
+  .info-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  #special-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #af4b4b;
+    margin-top: 10px;
+    display: inline-block; 
+    animation: increaseText 2s infinite alternate;
+    transform-origin: center; 
+  }
+  
+  @keyframes increaseText {
+    to {
+      transform: scale(1.2);
+    }
+  }
+  
