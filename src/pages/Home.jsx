@@ -1,5 +1,5 @@
 import Case from '../components/Case';
-import Info from '../components/info';
+import Info from '../components/Info';
 
 const Home = () => {
 	return (
