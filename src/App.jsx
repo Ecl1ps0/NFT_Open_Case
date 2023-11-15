@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from './components';
 import { Toaster } from 'react-hot-toast';
-
+import Title from './components/Title';
 import { ProviderNFT } from './Context/NFTContract';
 
 const Home = lazy(() => import('./pages/Home'));
@@ -37,6 +37,10 @@ const App = () => {
 							<Route
 								path='*'
 								element={<Error />}
+							/>
+							<Route
+								path='/title'
+								element={<Title />}
 							/>
 						</Routes>
 						<Toaster
