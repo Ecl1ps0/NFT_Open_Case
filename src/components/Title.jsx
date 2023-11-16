@@ -27,7 +27,7 @@ export const Title = () => {
       <div className="flex flex-col h-screen">
       <div className="flex-1 h-[2000px] bg-white flex flex-col items-center justify-center relative">
       <img src={back1} alt="Background 1" className="absolute top-0 left-0 object-contain w-1/2 h-1/2 rotate-[-15deg]" />
-<img src={back3} alt="Background 2" className="absolute top-0 right-0 object-contain w-1/2 h-1/2 rotate-[15deg]" />
+<img src={back3} alt="Background 2" className="absolute top-0 right-0 object-contain w-1/2 h-1/2" />
 <img src={back2} alt="Background 3" className="absolute bottom-0 left-0 object-contain w-1/3 h-1/3" />
 <img src={back4} alt="Background 4" className="absolute bottom-0 right-0 object-contain w-1/3 h-1/3 " />
 
